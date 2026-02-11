@@ -1,10 +1,16 @@
+<!-- <input type="text" [value]="title" (input)="onTape($event)" class="form-control">
+<p>{{title}}</p> -->
+
+<!-- <input type="text" [(ngModel)]="title" class="form-control">
+<p>{{title}}</p> -->
+
 <!-- Main Content -->
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="mb-0"><i class="bi bi-calendar-event"></i> {{title}}</h1>
-                <a routerLink="'private/create-demande" class="btn btn-primary">
+                <a routerLink="/private/create-demande" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Nouvelle Demande
                 </a>
             </div>
@@ -15,9 +21,9 @@
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <label for="filterStatus" class="form-label"><strong>Filtrer par statut</strong></label>
-                            <select class="form-select" id="filterStatus">
-                                <option selected>Tous les statuts</option>
-                                <option value="En attente">En attente</option>
+                            <select class="form-select" [(ngModel)]="filter.statut" (change)="onFilterStatutChange()" id="filterStatus">
+                                <option value="">Tous les statuts</option>
+                                <option value="En Attente">En Attente</option>
                                 <option value="Acceptée">Acceptée</option>
                                 <option value="Refusée">Refusée</option>
                             </select>
@@ -25,12 +31,13 @@
                         
                         <div class="col-md-3 mb-3">
                             <label for="filterSpecialite" class="form-label"><strong>Filtrer par spécialité</strong></label>
-                            <select class="form-select" id="filterSpecialite">
-                                <option selected>Toutes les spécialités</option>
-                                <option value="Cardiologue">Cardiologue</option>
-                                <option value="Médecin Généraliste">Médecin Généraliste</option>
-                                <option value="Dermatologue">Dermatologue</option>
-                                <option value="Oculiste">Oculiste</option>
+                            <select class="form-select" [(ngModel)]="filter.specialite" (change)="onFilterSpecialiteChange()" id="filterSpecialite">
+                                <option value="">Toutes les spécialités</option>
+                                <option value="Cardiologie">Cardiologie</option>
+                                <option value="Dermatologie">Dermatologie</option>
+                                <option value="Pédiatrie">Pédiatrie</option>
+                                <option value="Orthopédie">Orthopédie</option>
+                                <option value="Gynécologie">Gynécologie</option>
                             </select>
                         </div>
                         
@@ -49,63 +56,87 @@
             
             <!-- Tableau des demandes -->
             <div class="card border-0 shadow-sm">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <!-- <th scope="col" style="width: 25%">Patient</th> -->
-                                    <th scope="col" style="width: 20%">Spécialité</th>
-                                    <th scope="col" style="width: 15%">Date Demandée</th>
-                                    <th scope="col" style="width: 10%">Heure</th>
-                                    <th scope="col" style="width: 15%">Statut</th>
-                                    <th scope="col" style="width: 15%">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for($demandes of demandes;track $demandes.id){
-                                <tr>
-                                    <td>{{ $demandes.specialite }}</td>
-                                    <td>{{ $demandes.dateDemande }}</td>
-                                    <td>{{ $demandes.heure }}</td>
-                                    <td><span class="badge badge-warning">{{ $demandes.statut }}</span></td>
-                                    <td>
-                                        <button class="btn btn-outline-primary btn-sm me-1">
-                                            <i class="bi bi-eye"></i> Voir
-                                        </button>
-                                    </td>
-                                </tr>    
-                                }@empty {
+                @if(demandeResponse != undefined && demandeResponse.data.length > 0) {
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted">Aucune demande de rendez-vous disponible.</td>
+                                        <!-- <th scope="col" style="width: 25%">Patient</th> -->
+                                        <th scope="col" style="width: 20%">Spécialité</th>
+                                        <th scope="col" style="width: 15%">Date Demandée</th>
+                                        <th scope="col" style="width: 10%">Heure</th>
+                                        <th scope="col" style="width: 15%">Statut</th>
+                                        <th scope="col" style="width: 15%">Actions</th>
                                     </tr>
-                                }
-                                
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @for($demandes of demandeResponse.data;track $demandes.id){
+                                    <tr>
+                                        <td>{{ $demandes.specialite }}</td>
+                                        <td>{{ $demandes.dateDemande }}</td>
+                                        <td>{{ $demandes.heure }}</td>
+                                        <td>
+                                            @if($demandes.statut == 'Acceptée') {
+                                                <span class="badge bg-success" ><i class="bi bi-check-circle"></i> {{ $demandes.statut }}</span>
+                                            } @else if($demandes.statut == 'Refusée') {
+                                                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> {{ $demandes.statut }}</span>
+                                            } @else {
+                                                <span class="badge bg-warning" style="color: black;"><i class="bi bi-clock-history"></i> {{ $demandes.statut }}</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-outline-primary btn-sm me-1">
+                                                <i class="bi bi-eye"></i> Voir
+                                            </button>
+                                        </td>
+                                    </tr>    
+                                    }@empty {
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">Aucune demande de rendez-vous disponible.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>  
                     </div>
-                    
-                    <!-- Pagination -->
-                    <div class="card-footer">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <button class="btn btn-outline-secondary btn-sm me-2">
-                                <i class="bi bi-chevron-left"></i> Précédent
-                            </button>
-                            
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-primary btn-sm mx-1">1</button>
-                                <button class="btn btn-outline-secondary btn-sm mx-1">2</button>
-                                <button class="btn btn-outline-secondary btn-sm mx-1">3</button>
-                                <span class="mx-2 text-muted">...</span>
+
+                        <!-- Pagination -->
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-center align-items-center">
+                                 <ul class="pagination justity-content-center">
+                                    <li class="page-item"><a class="page-link" href="#">Precédent</a></li>
+                                    @for(indexPage of demandeResponse.pages; track indexPage){
+                                    <li class="page-item" [class.active]="indexPage == demandeResponse.currentPage"> 
+                                        <a class="page-link" href="#">{{indexPage}}</a>
+                                    </li>
+                                    }
+                                    <li class="page-item"><a class="page-link" href="#">Suivant</a></li>
+                                </ul>
                             </div>
-                            
-                            <button class="btn btn-outline-secondary btn-sm ms-2">
-                                Suivant <i class="bi bi-chevron-right"></i>
-                            </button>
+                        </div>
+                } @else {
+                    <div class="card-body">
+                        <div class="text-center py-5">
+                            <i class="bi bi-calendar-x display-1 text-muted"></i>
+                            <h3 class="mt-3 text-muted">Aucune demande de rendez-vous trouvée</h3>
+                            <p class="text-muted">Vous n'avez pas encore fait de demande de rendez-vous. Cliquez sur "Nouvelle Demande" pour en créer une.</p>
+                            <a routerLink="/private/create-demande" class="btn btn-primary mt-3">
+                                <i class="bi bi-plus-circle"></i> Nouvelle Demande
+                            </a>
                         </div>
                     </div>
-                </div>
+                }
             </div>
+
+            <!-- Pagination -->
+            <!-- <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        
+                    </div>
+                </div>
+            </div> -->
         </div>
     </div>
 </div>

@@ -23,21 +23,25 @@
 //     }
 // }
 
-export enum SpecialiteModel {
-    CARDIOLOGIE = 'Cardiologie',
-    DERMATOLOGIE = 'Dermatologie',
-    PEDIATRIE = 'Pédiatrie',
-    ORTHOPEDIE = 'Orthopédie',
-    GYNECOLOGIE = 'Gynécologie'
-}
+// export enum SpecialiteModel {
+//     CARDIOLOGIE = 'Cardiologie',
+//     DERMATOLOGIE = 'Dermatologie',
+//     PEDIATRIE = 'Pédiatrie',
+//     ORTHOPEDIE = 'Orthopédie',
+//     GYNECOLOGIE = 'Gynécologie'
+// }
 
-export enum StatutDemandeModel {
-    EN_ATTENTE = 'En attente',
-    ACCPEPTEE = 'Accpetée',
-    REFUSEE = 'Refusée'
-}
+// export enum StatutDemandeModel {
+//     EN_ATTENTE = 'En attente',
+//     ACCPEPTEE = 'Accpetée',
+//     REFUSEE = 'Refusée'
+// }
 
-export interface DemanandeListRVModel {
+export type SpecialiteModel = 'Cardiologie' | 'Dermatologie' | 'Pédiatrie' | 'Orthopédie' | 'Gynécologie';
+
+export type StatutDemandeModel = 'En Attente' | 'Acceptée' | 'Refusée';
+
+export interface DemandeListRVModel {
     id: number;
     dateDemande: string;
     statut: StatutDemandeModel;
@@ -51,3 +55,19 @@ export interface DemanandeListRVModel {
 //     statut: 'Confirmée',
 //     heure: '14:00'
 // };
+
+export interface DemandeRVFilterModel {
+    specialite?: SpecialiteModel|'';
+    statut?: StatutDemandeModel;
+    page?: number;
+    size?: number;
+}
+
+export interface DemandeListResponseModel {
+    data: DemandeListRVModel[];
+    totalPages: number;
+    currentPage: number;
+    totalItems: number;
+    pages: number[];
+    size: number;
+}
