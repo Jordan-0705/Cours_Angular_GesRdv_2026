@@ -1,3 +1,3 @@
 export const environment = {
-    limit: 5
+    limit: 2
 };

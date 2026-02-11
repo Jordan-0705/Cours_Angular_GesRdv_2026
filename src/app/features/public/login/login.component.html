@@ -21,7 +21,8 @@
                             <p class="text-muted">Accédez à votre espace personnel</p>
                         </div>
 
-                        <form id="loginForm">
+                        <form id="loginForm" #loginForm="ngForm" (ngSubmit)="onLogin()">
+                            <!-- {{userLogin | json}} -->
                             <!-- Email/Username Field -->
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-semibold mb-2">
@@ -34,8 +35,10 @@
                                     <input type="text" 
                                            class="form-control" 
                                            id="email" 
+                                           name="email"
                                            placeholder="Entrez votre email ou nom d'utilisateur"
-                                           required>
+                                           required
+                                           [(ngModel)]="userLogin.email">
                                 </div>
                             </div>
 
@@ -51,8 +54,10 @@
                                     <input type="password" 
                                            class="form-control" 
                                            id="password" 
+                                           name="password"
                                            placeholder="Entrez votre mot de passe"
-                                           required>
+                                           required
+                                           [(ngModel)]="userLogin.password">
                                 </div>
                             </div>
 
@@ -102,3 +107,4 @@
         </div>
     </div>
 </div>
+

@@ -6,6 +6,7 @@ import { LoginComponent } from './features/public/login/login.component';
 import { PatientComponent } from './features/public/patient/patient.component';
 import { PublicComponent } from './features/public/public.component';
 import { PrivateComponent } from './features/private/private.component';
+import { isConnectGuard } from './core/guards/is-connect.guard';
 
 
 export const routes: Routes = [
@@ -14,6 +15,8 @@ export const routes: Routes = [
   {
     path: 'private',
     component: PrivateComponent,
+    canActivate: [isConnectGuard],
+    canActivateChild: [isConnectGuard],
     children: [
       {path: '', redirectTo: 'dash', pathMatch: 'full'},
       {
