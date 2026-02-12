@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { SecurityService } from '../../../core/services/security.service';
 import { UserLoginRequest } from '../../../core/models/user.model';
-import { FormsModule } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
+import { JsonPipe, NgClass } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NgClass],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -18,18 +18,28 @@ export class LoginComponent {
     password: ''
   };
 
+  errorMessage: string = '';
+
   constructor(private securityService: SecurityService, private router: Router) {}
 
-  onLogin() {
+  onLogin(formCrl: NgForm): void {
+
+    if (formCrl.invalid) {
+      this.errorMessage = 'Veuillez remplir tous les champs requis correctement.';
+      return;
+    }
+
     // alert("LoginComponent onLogin called with: " + JSON.stringify(this.userLogin));
     const loginResult = this.securityService.login(this.userLogin);
     // console.log('Login attempt with:', this.userLogin);
     if (loginResult!=null) {
       this.router.navigate(['/private/dash']);
-    } else {
-      console.log('Login failed: Invalid email or password');
     }
-
   }
+
+  isFieldValid(fieldName: string, formCrl: NgForm): boolean {
+    const field = formCrl?.controls[fieldName];
+    return !!(field && field.invalid && (field.dirty || field.touched));
+  } 
 
 }

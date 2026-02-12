@@ -8,7 +8,13 @@
                 </div>
                 
                 <div class="card-body p-4">
-                    <form id="patientForm">
+                    @if(messageSucccess) {  
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ messageSucccess }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    <form id="patientForm" [formGroup]="patientForm" (ngSubmit)="onSubmit()">
                         <!-- Numéro Patient -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">
@@ -20,9 +26,25 @@
                                        class="form-control" 
                                        id="patientNumber"
                                        placeholder="001"
-                                       required>
+                                       formControlName="numero"
+                                       [ngClass]="{
+                                        'is-invalid':isFieldValid('numero'),
+                                        'is-valid':!isFieldValid('numero')
+                                       }">
                             </div>
-                            <small class="text-muted">Le numéro patient est généré automatiquement</small>
+                            @if(isFieldValid('numero')) {
+                                @if(f['numero'].errors?.['required']){
+                                    <div class="text-danger small mt-1">
+                                        Le numéro patient est requis.
+                                    </div>
+                                }
+                                @if(f['numero'].errors?.['minlength']){
+                                    <div class="text-danger small mt-1">
+                                        Le numéro patient doit comporter au moins 5 caractères.
+                                    </div>
+                                }
+                            }
+                            <!-- <small class="text-muted">Le numéro patient est généré automatiquement</small> -->
                         </div>
 
                         <div class="row">
@@ -35,8 +57,20 @@
                                        class="form-control" 
                                        id="lastName"
                                        placeholder="Entrez le nom de famille"
-                                       required>
+                                       formControlName="nom"
+                                       [ngClass]="{
+                                        'is-invalid':isFieldValid('nom'),
+                                        'is-valid':!isFieldValid('nom')
+                                       }">
                             </div>
+                            @if(isFieldValid('nom')) {
+                                @if(f['nom'].errors?.['required']){
+
+                                    <div class="text-danger small mt-1">
+                                        Le nom est requis.
+                                    </div>
+                                }
+                            }
                             
                             <!-- Prénom -->
                             <div class="col-md-6 mb-4">
@@ -47,8 +81,19 @@
                                        class="form-control" 
                                        id="firstName"
                                        placeholder="Entrez le prénom"
-                                       required>
+                                       formControlName="prenom"
+                                       [ngClass]="{
+                                        'is-invalid':isFieldValid('prenom'),
+                                        'is-valid':!isFieldValid('prenom')
+                                       }">
                             </div>
+                            @if(isFieldValid('prenom')) {
+                                @if(f['prenom'].errors?.['required']){
+                                    <div class="text-danger small mt-1">
+                                        Le prénom est requis.
+                                    </div>
+                                }
+                            }
                         </div>
 
                         <!-- Téléphone -->
@@ -62,8 +107,19 @@
                                        class="form-control" 
                                        id="phone" 
                                        placeholder="77 123 45 67"
-                                       required>
+                                       formControlName="telephone"
+                                       [ngClass]="{
+                                        'is-invalid':isFieldValid('telephone'),
+                                        'is-valid':!isFieldValid('telephone')
+                                       }">
                             </div>
+                            @if(isFieldValid('telephone')) {
+                                @if(f['telephone'].errors?.['required']){
+                                    <div class="text-danger small mt-1">
+                                        Le numéro de téléphone est requis.
+                                    </div>
+                                }
+                            }
                         </div>
 
                         <!-- Adresse -->
@@ -75,7 +131,18 @@
                                       id="address" 
                                       rows="2"
                                       placeholder="Rue, Code postal, Ville"
-                                      required></textarea>
+                                      formControlName="adresse"
+                                      [ngClass]="{
+                                        'is-invalid':isFieldValid('adresse'),
+                                        'is-valid':!isFieldValid('adresse')
+                                       }"></textarea>
+                            @if(isFieldValid('adresse')) {
+                                @if(f['adresse'].errors?.['required']){
+                                    <div class="text-danger small mt-1">
+                                        L'adresse est requise.
+                                    </div>
+                                }
+                            }
                         </div>
 
                         <!-- Antécédents Médicaux -->
@@ -86,7 +153,8 @@
                             <textarea class="form-control" 
                                       id="medicalHistory" 
                                       rows="4"
-                                      placeholder="Décrivez vos antécédents médicaux, allergies, maladies chroniques..."></textarea>
+                                      placeholder="Décrivez vos antécédents médicaux, allergies, maladies chroniques..."
+                                      formControlName="antecedents"></textarea>
                             <small class="text-muted">Ces informations sont importantes pour les professionnels de santé</small>
                         </div>
 
@@ -147,10 +215,10 @@
                                 <i class="bi bi-arrow-left me-1"></i> Retour
                             </button>
                             <div>
-                                <button type="reset" class="btn btn-outline-danger me-2">
+                                <button type="button" class="btn btn-outline-danger me-2" (click)="onReset()">
                                     <i class="bi bi-x-circle me-1"></i> Annuler
                                 </button>
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" [disabled]="patientForm.invalid">
                                     <i class="bi bi-check-circle me-1"></i> Enregistrer le Patient
                                 </button>
                             </div>
