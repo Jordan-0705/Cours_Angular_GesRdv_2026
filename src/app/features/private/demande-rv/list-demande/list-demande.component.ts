@@ -1,16 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DemandeListResponseModel, DemandeListRVModel, DemandeRVFilterModel } from '../../models/demande.models';
 import { DemandeService } from '../services/demande.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { DemandeMockService } from '../services/demande.mock.service';
 
 @Component({
   selector: 'app-list-demande',
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './list-demande.component.html',
-  styleUrl: './list-demande.component.css'
+  styleUrl: './list-demande.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListDemandeComponent implements OnInit,OnDestroy {
   public title: string = "Mes Demandes de RV";
@@ -21,7 +23,7 @@ export class ListDemandeComponent implements OnInit,OnDestroy {
     statut: 'En Attente',
   }
 
-  constructor(private demandeService: DemandeService) {
+  constructor(private demandeService: DemandeService) { ///////////////// DemandeMockService
      // Remplacez par votre service réel pour récupérer les demandes
   }
 
