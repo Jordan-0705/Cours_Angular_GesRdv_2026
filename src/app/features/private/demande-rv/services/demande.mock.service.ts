@@ -49,6 +49,6 @@ export class DemandeMockService implements DemandeServiceInterface {
       totalItems: demandes.length,
       pages: pages,
       size: size
-    }).pipe(delay(5000));
+    }).pipe(delay(2000));
   }
 }

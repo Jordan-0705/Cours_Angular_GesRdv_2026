@@ -22,7 +22,7 @@ export class PatientComponent {
         nom: ['', [Validators.required]],
         prenom: ['', [Validators.required]],
         adresse: ['', [Validators.required]],
-        telephone: ['', [Validators.required]],
+        telephone: ['', [Validators.required,Validators.pattern(/^(77|78|76)[0-9]{7}$/)]],
         antecedents: ['']
       });
     }

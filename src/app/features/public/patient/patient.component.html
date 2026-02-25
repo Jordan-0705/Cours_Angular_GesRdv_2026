@@ -119,6 +119,11 @@
                                         Le numéro de téléphone est requis.
                                     </div>
                                 }
+                                @if(f['telephone'].errors?.['pattern']){
+                                    <div class="text-danger small mt-1">
+                                        Le numéro de téléphone doit être au format (77/78/79) 123 45 67.
+                                    </div>
+                                }
                             }
                         </div>
 

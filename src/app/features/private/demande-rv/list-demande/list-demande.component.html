@@ -77,13 +77,16 @@
                                         <td>{{ $demandes.dateDemande }}</td>
                                         <td>{{ $demandes.heure }}</td>
                                         <td>
-                                            @if($demandes.statut == 'Acceptée') {
+                                            <app-badge 
+                                                [statut]="$demandes.statut">
+                                            </app-badge>
+                                            <!-- @if($demandes.statut == 'Acceptée') {
                                                 <span class="badge bg-success" ><i class="bi bi-check-circle"></i> {{ $demandes.statut }}</span>
                                             } @else if($demandes.statut == 'Refusée') {
                                                 <span class="badge bg-danger"><i class="bi bi-x-circle"></i> {{ $demandes.statut }}</span>
                                             } @else {
                                                 <span class="badge bg-warning" style="color: black;"><i class="bi bi-clock-history"></i> {{ $demandes.statut }}</span>
-                                            }
+                                            } -->
                                         </td>
                                         <td>
                                             <button class="btn btn-outline-primary btn-sm me-1">
@@ -116,7 +119,11 @@
                             </div>
                         </div>
                 } @else {
-                    <div class="card-body">
+                    <app-alert 
+                        [message]="'Aucune demande de rendez-vous disponible.'"
+                        [type]="'info'">
+                    </app-alert>
+                    <!-- <div class="card-body">
                         <div class="text-center py-5">
                             <i class="bi bi-calendar-x display-1 text-muted"></i>
                             <h3 class="mt-3 text-muted">Aucune demande de rendez-vous trouvée</h3>
@@ -125,7 +132,7 @@
                                 <i class="bi bi-plus-circle"></i> Nouvelle Demande
                             </a>
                         </div>
-                    </div>
+                    </div> -->
                 }
             </div>
 

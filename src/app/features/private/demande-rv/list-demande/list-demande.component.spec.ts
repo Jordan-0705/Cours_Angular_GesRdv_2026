@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ListDemandeComponent } from './list-demande.component';

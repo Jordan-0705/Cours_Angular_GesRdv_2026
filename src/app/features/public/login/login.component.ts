@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { SecurityService } from '../../../core/services/security.service';
 import { UserLoginRequest } from '../../../core/models/user.model';
 import { FormsModule, NgForm } from '@angular/forms';
 import { JsonPipe, NgClass } from '@angular/common';
 import { Router } from '@angular/router';
+import { ISecurityService, SECURITY_SERVICE_TOKEN } from '../../../core/services/interfaces/security.interface.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,7 @@ export class LoginComponent {
 
   errorMessage: string = '';
 
-  constructor(private securityService: SecurityService, private router: Router) {}
+  constructor(@Inject(SECURITY_SERVICE_TOKEN) private securityService: ISecurityService, private router: Router) {}
 
   onLogin(formCrl: NgForm): void {
 
