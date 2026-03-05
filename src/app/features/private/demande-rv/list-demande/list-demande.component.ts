@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DemandeListResponseModel, DemandeListRVModel, DemandeRVFilterModel } from '../../models/demande.models';
 import { DemandeService } from '../services/demande.service';
 import { FormsModule } from '@angular/forms';
@@ -9,11 +9,12 @@ import { Observable, Subscription } from 'rxjs';
 import { DEMANDE_SERVICE_TOKEN, DemandeServiceInterface } from '../services/interfaces/demande.interface.service';
 import { AlertComponent } from "../../../../shared/component/alert/alert.component";
 import { BadgeComponent } from "../../../../shared/component/badge/badge.component";
+import { PaginationComponent } from '../../../../shared/component/pagination/pagination.component';
 
 @Component({
   selector: 'app-list-demande',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, AlertComponent, BadgeComponent],
+  imports: [CommonModule, RouterLink, FormsModule, AlertComponent, BadgeComponent,PaginationComponent],
   templateUrl: './list-demande.component.html',
   styleUrl: './list-demande.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -29,7 +30,9 @@ export class ListDemandeComponent implements OnInit,OnDestroy {
     statut: 'En Attente',
   }
 
-  constructor(@Inject(DEMANDE_SERVICE_TOKEN) private demandeService: DemandeServiceInterface,private cdr: ChangeDetectorRef) { ///////////////// DemandeMockService
+  constructor(private cdr: ChangeDetectorRef,
+              private route: ActivatedRoute) 
+  { ///////////////// DemandeMockService
      // Remplacez par votre service réel pour récupérer les demandes
   }
 
@@ -45,17 +48,15 @@ export class ListDemandeComponent implements OnInit,OnDestroy {
     this.title = $event.target.value;
   }
 
-  private loadDemandes() {
-    let demaandes$: Observable<DemandeListResponseModel> = this.demandeService.getDemandesRV(this.filter);
-    demaandes$.subscribe({
-      next: (data:DemandeListResponseModel) => {
-        this.demandeResponse = data;
+  private loadDemandes(): void {
+    this.subscription = this.route.data.subscribe({
+      next:(data)=>{
+        this.demandeResponse = data['demandes'] as DemandeListResponseModel;
+        console.log(this.demandeResponse);
         this.cdr.markForCheck();
       },
-      error: (err) => {
-        console.error("Erreur lors du chargement des demandes : ", err);
-      },
-      complete: () => {console.log("Chargement des demandes terminé.");
+      error:(error)=>{
+        console.log(error);
       }
     });
   }
@@ -68,13 +69,15 @@ export class ListDemandeComponent implements OnInit,OnDestroy {
     this.filter.page = page;
     this.loadDemandes();
   }
+  
+  
 
-  get desactivePrecedent(): boolean {
-    return !(this.demandeResponse ? this.demandeResponse.currentPage > 1 : false);
-  }
+  // get desactivePrecedent(): boolean {
+  //   return !(this.demandeResponse ? this.demandeResponse.currentPage > 1 : false);
+  // }
 
-  get desactiveSuivant(): boolean {
-    return !(this.demandeResponse ? this.demandeResponse.currentPage < this.demandeResponse.totalPages : false);
-  }
+  // get desactiveSuivant(): boolean {
+  //   return !(this.demandeResponse ? this.demandeResponse.currentPage < this.demandeResponse.totalPages : false);
+  // }
 
 }

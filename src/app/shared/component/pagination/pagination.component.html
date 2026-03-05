@@ -1,1 +1,13 @@
-<p>pagination works!</p>
+<div class="card-footer">
+    <div class="d-flex justify-content-center align-items-center">
+        <ul class="pagination justity-content-center">
+            <li class="page-item" [class.disabled]="desactivePrecedent" ><a class="page-link" href="#" (click)="onPageChange(currentPage - 1)">Precédent</a></li>
+            @for(indexPage of pages; track indexPage){
+            <li class="page-item" [class.active]="indexPage == currentPage"> 
+                <a class="page-link" href="#" (click)="onPageChange(indexPage)">{{indexPage}}</a>
+            </li>
+            }
+            <li class="page-item" [class.disabled]="desactiveSuivant"><a class="page-link" href="#" (click)="onPageChange(currentPage + 1)">Suivant</a></li>
+        </ul>
+    </div>
+</div>

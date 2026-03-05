@@ -4,6 +4,7 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
 import { FormDemandeComponent } from "./demande-rv/form-demande/form-demande.component";
 import { ListDemandeComponent } from "./demande-rv/list-demande/list-demande.component";
 import { PrivateComponent } from "./private.component";
+import { demandeResolver } from "./demande-rv/resolver/demande.resolver";
 
 export const PRIVATE_ROUTES: Routes = [
   
@@ -24,7 +25,10 @@ export const PRIVATE_ROUTES: Routes = [
       },
       {
         path:"list-demande-rv",
-        loadComponent: () => import('./demande-rv/list-demande/list-demande.component').then(m => m.ListDemandeComponent)
+        loadComponent: () => import('./demande-rv/list-demande/list-demande.component').then(m => m.ListDemandeComponent),
+        resolve: {
+          demandes: demandeResolver
+        }
       },
     ]
   }
