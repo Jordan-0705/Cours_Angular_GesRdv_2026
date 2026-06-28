@@ -37,7 +37,7 @@ export class DemandeMockService implements DemandeServiceInterface {
 
     setTimeout(() => {
       console.log("Appel du Back End");
-    }, 5000);
+    }, 2000);
     const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     const demandesByPage = demandes.slice(startIndex, endIndex);

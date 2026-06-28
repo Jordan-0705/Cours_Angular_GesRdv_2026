@@ -58,7 +58,7 @@ export interface DemandeListRVModel {
 
 export interface DemandeRVFilterModel {
     specialite?: SpecialiteModel|'';
-    statut?: StatutDemandeModel;
+    statut?: StatutDemandeModel|'';
     page?: number;
     size?: number;
 }

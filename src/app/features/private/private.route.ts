@@ -30,6 +30,10 @@ export const PRIVATE_ROUTES: Routes = [
           demandes: demandeResolver
         }
       },
+      {
+        path:"rv",
+        loadComponent: () => import('./demande-rv/rv/rv.component').then(m => m.RvComponent)
+      },
     ]
   }
 ];

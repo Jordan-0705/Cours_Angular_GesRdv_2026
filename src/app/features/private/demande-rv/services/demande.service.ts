@@ -13,7 +13,7 @@ export class DemandeService {
   public getDemandesRV(filter: DemandeRVFilterModel): DemandeListResponseModel {
     setTimeout(() => {
       console.log("Appel du Back End");
-    }, 5000);
+    }, 2000);
 
     let demandes = [...MOCK_DEMANDES];
 
@@ -37,7 +37,7 @@ export class DemandeService {
 
     setTimeout(() => {
       console.log("Appel du Back End");
-    }, 5000);
+    }, 2000);
     const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     const demandesByPage = demandes.slice(startIndex, endIndex);

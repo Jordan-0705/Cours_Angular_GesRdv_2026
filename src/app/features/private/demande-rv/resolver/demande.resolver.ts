@@ -10,7 +10,7 @@ export const demandeResolver: ResolveFn<DemandeListResponseModel | undefined> = 
 
   const filter:DemandeRVFilterModel = {
     specialite: '',
-    statut: 'En Attente',
+    statut: '',
   }
 
   // let demandeResponse: DemandeListResponseModel | undefined = undefined;

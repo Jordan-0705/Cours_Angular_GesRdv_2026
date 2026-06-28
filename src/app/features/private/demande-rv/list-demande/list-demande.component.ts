@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DemandeListResponseModel, DemandeListRVModel, DemandeRVFilterModel } from '../../models/demande.models';
-import { DemandeService } from '../services/demande.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { DemandeMockService } from '../services/demande.mock.service';
 import { Observable, Subscription } from 'rxjs';
 import { DEMANDE_SERVICE_TOKEN, DemandeServiceInterface } from '../services/interfaces/demande.interface.service';
 import { AlertComponent } from "../../../../shared/component/alert/alert.component";
@@ -14,30 +12,42 @@ import { PaginationComponent } from '../../../../shared/component/pagination/pag
 @Component({
   selector: 'app-list-demande',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, AlertComponent, BadgeComponent,PaginationComponent],
+  imports: [CommonModule, RouterLink, FormsModule, AlertComponent, BadgeComponent, PaginationComponent],
   templateUrl: './list-demande.component.html',
   styleUrl: './list-demande.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ListDemandeComponent implements OnInit,OnDestroy {
+export class ListDemandeComponent implements OnInit, OnDestroy {
   public title: string = "Mes Demandes de RV";
 
   demandeResponse?: DemandeListResponseModel;
-  subscription?:Subscription;
+  subscription?: Subscription;
+  isLoading: boolean = false;
 
-  filter:DemandeRVFilterModel = {
+  filter: DemandeRVFilterModel = {
     specialite: '',
-    statut: 'En Attente',
+    statut: '',
+    page: 1 // Initialiser la page à 1
   }
 
-  constructor(private cdr: ChangeDetectorRef,
-              private route: ActivatedRoute) 
-  { ///////////////// DemandeMockService
-     // Remplacez par votre service réel pour récupérer les demandes
-  }
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    @Inject(DEMANDE_SERVICE_TOKEN) private demandeService: DemandeServiceInterface // Injecter le service
+  ) { }
 
   ngOnInit(): void {
-    this.loadDemandes();
+    // Utiliser les données du resolver pour le chargement initial
+    this.route.data.subscribe({
+      next: (data) => {
+        this.demandeResponse = data['demandes'] as DemandeListResponseModel;
+        console.log('Données initiales du resolver:', this.demandeResponse);
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.log('Erreur resolver:', error);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -48,36 +58,45 @@ export class ListDemandeComponent implements OnInit,OnDestroy {
     this.title = $event.target.value;
   }
 
-  private loadDemandes(): void {
-    this.subscription = this.route.data.subscribe({
-      next:(data)=>{
-        this.demandeResponse = data['demandes'] as DemandeListResponseModel;
-        console.log(this.demandeResponse);
+  // Méthode pour charger les données avec les filtres actuels
+  private loadDemandesWithFilters(): void {
+    this.isLoading = true;
+    this.subscription?.unsubscribe(); // Annuler la souscription précédente
+    
+    this.subscription = this.demandeService.getDemandesRV(this.filter).subscribe({
+      next: (response) => {
+        this.demandeResponse = response;
+        console.log('Données avec filtres:', this.filter, response);
+        this.isLoading = false;
         this.cdr.markForCheck();
       },
-      error:(error)=>{
-        console.log(error);
+      error: (error) => {
+        console.log('Erreur lors du chargement:', error);
+        this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
 
-  onFilterStatutAndSpecialiteChange() {
-    this.loadDemandes();
+  // Quand un filtre change
+  onFilterStatutAndSpecialiteChange(): void {
+    this.filter.page = 1; // Réinitialiser à la page 1 quand les filtres changent
+    this.loadDemandesWithFilters();
   }
 
+  // Quand la page change
   onPageChange(page: number): void {
     this.filter.page = page;
-    this.loadDemandes();
+    this.loadDemandesWithFilters();
   }
-  
-  
 
-  // get desactivePrecedent(): boolean {
-  //   return !(this.demandeResponse ? this.demandeResponse.currentPage > 1 : false);
-  // }
-
-  // get desactiveSuivant(): boolean {
-  //   return !(this.demandeResponse ? this.demandeResponse.currentPage < this.demandeResponse.totalPages : false);
-  // }
-
+  // Méthode pour réinitialiser les filtres
+  resetFilters(): void {
+    this.filter = {
+      specialite: '',
+      statut: '',
+      page: 1
+    };
+    this.loadDemandesWithFilters();
+  }
 }
